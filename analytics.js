@@ -21,7 +21,8 @@
     path: '/vakin-arbetsorderprocess/' + (isHuki ? 'huki.html' : ''),
     title: isHuki ? 'Ansvar och roller' : 'Arbetsorderprocessen',
     referrer: '',
-    no_events: true
+    no_events: true,
+    no_onload: true
   };
 
   // Asynkron laddning låter guiden fungera även om statistiken blockeras.
@@ -29,6 +30,27 @@
   counter.async = true;
   counter.src = 'https://gc.zgo.at/count.js';
   counter.setAttribute('data-goatcounter', endpoint);
+  counter.onload = () => {
+    const gc = window.goatcounter;
+    if (typeof gc.get_data !== 'function' || typeof gc.count !== 'function') return;
+    // Standardskriptet lägger även till adressparametrar i ett separat fält.
+    // Rensa detta fält före sändning, även när en fast sidväg redan används.
+    const getData = gc.get_data;
+    gc.get_data = vars => {
+      const data = getData(vars);
+      delete data.q;
+      data.r = '';
+      return data;
+    };
+    // Räkna en gång när sidan visas, även om den först öppnades i en bakgrundsflik.
+    const countOnce = () => {
+      if (document.visibilityState === 'hidden' || document.visibilityState === 'prerender') return;
+      document.removeEventListener('visibilitychange', countOnce);
+      gc.count();
+    };
+    document.addEventListener('visibilitychange', countOnce);
+    countOnce();
+  };
   document.head.appendChild(counter);
 
   // En diskret upplysning beskriver den externa mätningen för besökaren.

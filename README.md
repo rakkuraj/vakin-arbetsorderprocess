@@ -21,3 +21,17 @@ Sidorna använder inbäddad CSS och JavaScript och kräver inget byggsteg eller 
 ## Redigering
 
 Processtexterna ligger i `steps` och kompletteringarna i `index.html`. HUKI-aktiviteter, rollbeskrivningar och kopplingar till processtegen ligger i `data`, `stepRows` och `stepNames` i `huki.html`. Behåll en huvudansvarig roll per aktivitet.
+
+## Besöksstatistik
+
+Båda vyerna använder GoatCounter utan kakor via den gemensamma filen `analytics.js`.
+Statistiken läses genom inloggning på https://rakkuraj.goatcounter.com.
+
+Processguidens adresser sammanförs och HUKI-vyn visas separat. Stegval, rollfilter,
+söktext och hänvisningsadresser skickas inte till statistiktjänsten. Växling mellan
+processteg räknas inte som nya sidvisningar. Unika besök är en uppskattning och ska
+inte tolkas som ett exakt antal personer; samma person kan återkomma som nytt besök.
+
+Mätningen körs bara på den publicerade prototypen, inte i lokala förhandsvisningar.
+Besök med blockerat statistikskript kan saknas i statistiken. Sätt `endpoint` till
+en tom sträng i `analytics.js` för att stänga av mätningen.
